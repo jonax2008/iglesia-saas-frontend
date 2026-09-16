@@ -9,6 +9,13 @@ const NAV_ADMIN = [
   { href: "/grados-ministros", label: "Grados de ministro" },
   { href: "/iglesias", label: "Iglesias" },
   { href: "/ministros", label: "Ministros" },
+  { href: "/grupos", label: "Grupos" },
+  { href: "/miembros", label: "Miembros" },
+  { href: "/familias", label: "Familias" },
+  { href: "/comisiones", label: "Comisiones" },
+  { href: "/niveles-estudio", label: "Niveles de estudio" },
+  { href: "/estados-civiles", label: "Estado civil" },
+  { href: "/profesiones-ocupaciones", label: "Profesiones/ocupaciones" },
 ];
 
 export default async function AppLayout({

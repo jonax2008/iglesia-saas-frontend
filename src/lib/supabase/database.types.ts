@@ -179,6 +179,85 @@ export type Database = {
         }
         Relationships: []
       }
+      familia_hijos: {
+        Row: {
+          familia_id: string
+          miembro_id: string
+        }
+        Insert: {
+          familia_id: string
+          miembro_id: string
+        }
+        Update: {
+          familia_id?: string
+          miembro_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "familia_hijos_familia_id_fkey"
+            columns: ["familia_id"]
+            isOneToOne: false
+            referencedRelation: "familias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "familia_hijos_miembro_id_fkey"
+            columns: ["miembro_id"]
+            isOneToOne: false
+            referencedRelation: "miembros"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      familias: {
+        Row: {
+          creado_en: string
+          id: string
+          iglesia_id: string
+          madre_miembro_id: string | null
+          nombre: string
+          padre_miembro_id: string | null
+        }
+        Insert: {
+          creado_en?: string
+          id?: string
+          iglesia_id: string
+          madre_miembro_id?: string | null
+          nombre: string
+          padre_miembro_id?: string | null
+        }
+        Update: {
+          creado_en?: string
+          id?: string
+          iglesia_id?: string
+          madre_miembro_id?: string | null
+          nombre?: string
+          padre_miembro_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "familias_iglesia_id_fkey"
+            columns: ["iglesia_id"]
+            isOneToOne: false
+            referencedRelation: "iglesias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "familias_madre_miembro_id_fkey"
+            columns: ["madre_miembro_id"]
+            isOneToOne: false
+            referencedRelation: "miembros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "familias_padre_miembro_id_fkey"
+            columns: ["padre_miembro_id"]
+            isOneToOne: false
+            referencedRelation: "miembros"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       grados_ministros: {
         Row: {
           id: string
@@ -193,6 +272,81 @@ export type Database = {
           nombre?: string
         }
         Relationships: []
+      }
+      grupo_auxiliares: {
+        Row: {
+          grupo_id: string
+          miembro_id: string
+        }
+        Insert: {
+          grupo_id: string
+          miembro_id: string
+        }
+        Update: {
+          grupo_id?: string
+          miembro_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grupo_auxiliares_grupo_id_fkey"
+            columns: ["grupo_id"]
+            isOneToOne: false
+            referencedRelation: "grupos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "grupo_auxiliares_miembro_id_fkey"
+            columns: ["miembro_id"]
+            isOneToOne: false
+            referencedRelation: "miembros"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grupos: {
+        Row: {
+          creado_en: string
+          edad_final: number
+          edad_inicial: number
+          encargado_miembro_id: string | null
+          id: string
+          iglesia_id: string
+          nombre: string
+        }
+        Insert: {
+          creado_en?: string
+          edad_final: number
+          edad_inicial: number
+          encargado_miembro_id?: string | null
+          id?: string
+          iglesia_id: string
+          nombre: string
+        }
+        Update: {
+          creado_en?: string
+          edad_final?: number
+          edad_inicial?: number
+          encargado_miembro_id?: string | null
+          id?: string
+          iglesia_id?: string
+          nombre?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grupos_encargado_miembro_id_fkey"
+            columns: ["encargado_miembro_id"]
+            isOneToOne: false
+            referencedRelation: "miembros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "grupos_iglesia_id_fkey"
+            columns: ["iglesia_id"]
+            isOneToOne: false
+            referencedRelation: "iglesias"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       iglesias: {
         Row: {
@@ -289,6 +443,180 @@ export type Database = {
           nombre?: string
         }
         Relationships: []
+      }
+      miembro_comisiones: {
+        Row: {
+          comision_id: string
+          miembro_id: string
+        }
+        Insert: {
+          comision_id: string
+          miembro_id: string
+        }
+        Update: {
+          comision_id?: string
+          miembro_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "miembro_comisiones_comision_id_fkey"
+            columns: ["comision_id"]
+            isOneToOne: false
+            referencedRelation: "comisiones"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "miembro_comisiones_miembro_id_fkey"
+            columns: ["miembro_id"]
+            isOneToOne: false
+            referencedRelation: "miembros"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      miembros: {
+        Row: {
+          categoria: string
+          correo_personal: string | null
+          creado_en: string
+          credencial_vigente_hasta: string | null
+          estado_civil_id: string | null
+          fecha_bautismo: string
+          fecha_espiritu_santo: string
+          grupo_id: string
+          id: string
+          iglesia_id: string
+          lugar_bautismo: string | null
+          lugar_nacimiento_ciudad_id: string | null
+          lugar_nacimiento_estado_id: string | null
+          lugar_nacimiento_pais_id: string | null
+          ministro_bautizo_id: string | null
+          ministro_testifico_id: string | null
+          nivel_estudios_id: string | null
+          persona_id: string
+          profesion_ocupacion_id: string | null
+        }
+        Insert: {
+          categoria?: string
+          correo_personal?: string | null
+          creado_en?: string
+          credencial_vigente_hasta?: string | null
+          estado_civil_id?: string | null
+          fecha_bautismo: string
+          fecha_espiritu_santo: string
+          grupo_id: string
+          id?: string
+          iglesia_id: string
+          lugar_bautismo?: string | null
+          lugar_nacimiento_ciudad_id?: string | null
+          lugar_nacimiento_estado_id?: string | null
+          lugar_nacimiento_pais_id?: string | null
+          ministro_bautizo_id?: string | null
+          ministro_testifico_id?: string | null
+          nivel_estudios_id?: string | null
+          persona_id: string
+          profesion_ocupacion_id?: string | null
+        }
+        Update: {
+          categoria?: string
+          correo_personal?: string | null
+          creado_en?: string
+          credencial_vigente_hasta?: string | null
+          estado_civil_id?: string | null
+          fecha_bautismo?: string
+          fecha_espiritu_santo?: string
+          grupo_id?: string
+          id?: string
+          iglesia_id?: string
+          lugar_bautismo?: string | null
+          lugar_nacimiento_ciudad_id?: string | null
+          lugar_nacimiento_estado_id?: string | null
+          lugar_nacimiento_pais_id?: string | null
+          ministro_bautizo_id?: string | null
+          ministro_testifico_id?: string | null
+          nivel_estudios_id?: string | null
+          persona_id?: string
+          profesion_ocupacion_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "miembros_estado_civil_id_fkey"
+            columns: ["estado_civil_id"]
+            isOneToOne: false
+            referencedRelation: "estados_civiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "miembros_grupo_id_fkey"
+            columns: ["grupo_id"]
+            isOneToOne: false
+            referencedRelation: "grupos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "miembros_iglesia_id_fkey"
+            columns: ["iglesia_id"]
+            isOneToOne: false
+            referencedRelation: "iglesias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "miembros_lugar_nacimiento_ciudad_id_fkey"
+            columns: ["lugar_nacimiento_ciudad_id"]
+            isOneToOne: false
+            referencedRelation: "ciudades"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "miembros_lugar_nacimiento_estado_id_fkey"
+            columns: ["lugar_nacimiento_estado_id"]
+            isOneToOne: false
+            referencedRelation: "estados"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "miembros_lugar_nacimiento_pais_id_fkey"
+            columns: ["lugar_nacimiento_pais_id"]
+            isOneToOne: false
+            referencedRelation: "paises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "miembros_ministro_bautizo_id_fkey"
+            columns: ["ministro_bautizo_id"]
+            isOneToOne: false
+            referencedRelation: "ministros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "miembros_ministro_testifico_id_fkey"
+            columns: ["ministro_testifico_id"]
+            isOneToOne: false
+            referencedRelation: "ministros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "miembros_nivel_estudios_id_fkey"
+            columns: ["nivel_estudios_id"]
+            isOneToOne: false
+            referencedRelation: "niveles_estudio"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "miembros_persona_id_fkey"
+            columns: ["persona_id"]
+            isOneToOne: true
+            referencedRelation: "personas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "miembros_profesion_ocupacion_id_fkey"
+            columns: ["profesion_ocupacion_id"]
+            isOneToOne: false
+            referencedRelation: "profesiones_ocupaciones"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       ministros: {
         Row: {
@@ -527,6 +855,36 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      contar_grupos_liderados: {
+        Args: { p_miembro_id: string }
+        Returns: number
+      }
+      crear_miembro: {
+        Args: {
+          p_apellido_materno?: string
+          p_apellido_paterno: string
+          p_comision_ids?: string[]
+          p_correo_personal?: string
+          p_credencial_vigente_hasta?: string
+          p_curp?: string
+          p_estado_civil_id?: string
+          p_fecha_bautismo?: string
+          p_fecha_espiritu_santo?: string
+          p_fecha_nacimiento?: string
+          p_grupo_id?: string
+          p_iglesia_id?: string
+          p_lugar_bautismo?: string
+          p_lugar_nacimiento_ciudad_id?: string
+          p_ministro_bautizo_id?: string
+          p_ministro_testifico_id?: string
+          p_nivel_estudios_id?: string
+          p_nombres: string
+          p_profesion_ocupacion_id?: string
+          p_sexo?: string
+          p_telefono_celular?: string
+        }
+        Returns: string
+      }
       crear_ministro: {
         Args: {
           p_apellido_materno?: string
@@ -547,7 +905,9 @@ export type Database = {
         }
         Returns: string
       }
+      es_encargado_de_grupo: { Args: { p_grupo_id: string }; Returns: boolean }
       iglesia_actual: { Args: never; Returns: string }
+      miembro_actual: { Args: never; Returns: string }
       rol_actual: { Args: never; Returns: string }
     }
     Enums: {
