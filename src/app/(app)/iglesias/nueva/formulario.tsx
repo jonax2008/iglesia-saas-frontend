@@ -64,18 +64,6 @@ export function FormularioNuevaIglesia({
       </div>
 
       <div className="space-y-1">
-        <label htmlFor="codigo_postal" className="text-sm font-medium text-slate-700">
-          Código postal
-        </label>
-        <input
-          id="codigo_postal"
-          name="codigo_postal"
-          required
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-base"
-        />
-      </div>
-
-      <div className="space-y-1">
         <label
           htmlFor="google_maps_link"
           className="text-sm font-medium text-slate-700"

@@ -99,6 +99,7 @@ export function FormularioEditarIglesia({
           estadoId: iglesia.estado_id,
           ciudadId: iglesia.ciudad_id,
           coloniaId: iglesia.colonia_id,
+          codigoPostal: iglesia.codigo_postal,
         }}
       />
 
@@ -111,19 +112,6 @@ export function FormularioEditarIglesia({
           name="calle_numero"
           required
           defaultValue={iglesia.calle_numero}
-          className="w-full rounded-lg border border-slate-300 px-3 py-2 text-base"
-        />
-      </div>
-
-      <div className="space-y-1">
-        <label htmlFor="codigo_postal" className="text-sm font-medium text-slate-700">
-          Código postal
-        </label>
-        <input
-          id="codigo_postal"
-          name="codigo_postal"
-          required
-          defaultValue={iglesia.codigo_postal}
           className="w-full rounded-lg border border-slate-300 px-3 py-2 text-base"
         />
       </div>
