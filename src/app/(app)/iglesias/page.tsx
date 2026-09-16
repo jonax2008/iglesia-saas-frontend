@@ -25,7 +25,9 @@ export default async function PaginaIglesias() {
       <ul className="divide-y divide-slate-200 rounded-lg bg-white shadow-sm">
         {iglesias?.map((i) => (
           <li key={i.id} className="px-4 py-3">
-            <p className="text-sm font-medium text-slate-900">{i.nombre}</p>
+            <Link href={`/iglesias/${i.id}`} className="text-sm font-medium text-slate-900 underline">
+              {i.nombre}
+            </Link>
             <p className="text-sm text-slate-500">
               {i.calle_numero}, {i.ciudades?.nombre}, {i.estados?.nombre} — Distrito #
               {i.distritos?.numero} {i.distritos?.nombre}

@@ -11,14 +11,22 @@ type Opcion = { id: string; nombre: string };
  * colonia ni permite crear catálogo nuevo (aquí solo se usa para ubicar,
  * no para una dirección postal).
  */
-export function SelectorLugarNacimiento({ paises }: { paises: Opcion[] }) {
+type ValorInicial = { paisId: string; estadoId: string; ciudadId: string };
+
+export function SelectorLugarNacimiento({
+  paises,
+  valorInicial,
+}: {
+  paises: Opcion[];
+  valorInicial?: ValorInicial;
+}) {
   const supabase = createClient();
 
-  const [paisId, setPaisId] = useState(paises[0]?.id ?? "");
+  const [paisId, setPaisId] = useState(valorInicial?.paisId ?? paises[0]?.id ?? "");
   const [estados, setEstados] = useState<Opcion[]>([]);
-  const [estadoId, setEstadoId] = useState("");
+  const [estadoId, setEstadoId] = useState(valorInicial?.estadoId ?? "");
   const [ciudades, setCiudades] = useState<Opcion[]>([]);
-  const [ciudadId, setCiudadId] = useState("");
+  const [ciudadId, setCiudadId] = useState(valorInicial?.ciudadId ?? "");
 
   useEffect(() => {
     if (!paisId) return;

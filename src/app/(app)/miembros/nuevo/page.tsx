@@ -7,7 +7,6 @@ export default async function PaginaNuevoMiembro() {
     { data: paises },
     { data: iglesias },
     { data: grupos },
-    { data: ministros },
     { data: nivelesEstudio },
     { data: estadosCiviles },
     { data: profesiones },
@@ -19,10 +18,6 @@ export default async function PaginaNuevoMiembro() {
       .from("grupos")
       .select("id, nombre, edad_inicial, edad_final, iglesias(nombre)")
       .order("nombre"),
-    supabase
-      .from("ministros")
-      .select("id, personas(nombres, apellido_paterno)")
-      .order("id"),
     supabase.from("niveles_estudio").select("id, nombre").order("nombre"),
     supabase.from("estados_civiles").select("id, nombre").order("nombre"),
     supabase.from("profesiones_ocupaciones").select("id, nombre").order("nombre"),
@@ -36,7 +31,6 @@ export default async function PaginaNuevoMiembro() {
         paises={paises ?? []}
         iglesias={iglesias ?? []}
         grupos={grupos ?? []}
-        ministros={ministros ?? []}
         nivelesEstudio={nivelesEstudio ?? []}
         estadosCiviles={estadosCiviles ?? []}
         profesiones={profesiones ?? []}

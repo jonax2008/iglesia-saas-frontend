@@ -11,16 +11,29 @@ type Opcion = { id: string; nombre: string };
  * catálogo crece según se van registrando direcciones reales).
  * Expone el colonia_id elegido en un input oculto llamado "colonia_id".
  */
-export function SelectorGeografico({ paises }: { paises: Opcion[] }) {
+type ValorInicial = {
+  paisId: string;
+  estadoId: string;
+  ciudadId: string;
+  coloniaId: string;
+};
+
+export function SelectorGeografico({
+  paises,
+  valorInicial,
+}: {
+  paises: Opcion[];
+  valorInicial?: ValorInicial;
+}) {
   const supabase = createClient();
 
-  const [paisId, setPaisId] = useState(paises[0]?.id ?? "");
+  const [paisId, setPaisId] = useState(valorInicial?.paisId ?? paises[0]?.id ?? "");
   const [estados, setEstados] = useState<Opcion[]>([]);
-  const [estadoId, setEstadoId] = useState("");
+  const [estadoId, setEstadoId] = useState(valorInicial?.estadoId ?? "");
   const [ciudades, setCiudades] = useState<Opcion[]>([]);
-  const [ciudadId, setCiudadId] = useState("");
+  const [ciudadId, setCiudadId] = useState(valorInicial?.ciudadId ?? "");
   const [colonias, setColonias] = useState<Opcion[]>([]);
-  const [coloniaId, setColoniaId] = useState("");
+  const [coloniaId, setColoniaId] = useState(valorInicial?.coloniaId ?? "");
   const [nuevaColonia, setNuevaColonia] = useState({ nombre: "", codigoPostal: "" });
   const [creandoColonia, setCreandoColonia] = useState(false);
   const [errorColonia, setErrorColonia] = useState("");

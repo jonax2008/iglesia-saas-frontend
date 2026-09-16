@@ -25,13 +25,16 @@ export default async function PaginaMinistros() {
       <ul className="divide-y divide-slate-200 rounded-lg bg-white shadow-sm">
         {ministros?.map((m) => (
           <li key={m.id} className="px-4 py-3">
-            <p className="text-sm font-medium text-slate-900">
+            <Link
+              href={`/ministros/${m.id}`}
+              className="text-sm font-medium text-slate-900 underline"
+            >
               {m.personas?.nombres} {m.personas?.apellido_paterno}{" "}
-              {m.personas?.apellido_materno}{" "}
-              <span className="font-normal text-slate-500">
-                ({m.grados_ministros?.nombre})
-              </span>
-            </p>
+              {m.personas?.apellido_materno}
+            </Link>{" "}
+            <span className="text-sm font-normal text-slate-500">
+              ({m.grados_ministros?.nombre})
+            </span>
             <p className="text-sm text-slate-500">
               {m.iglesias?.nombre} — desde {m.fecha_inicio_administracion}
               {m.fecha_fin_administracion ? ` hasta ${m.fecha_fin_administracion}` : ""}

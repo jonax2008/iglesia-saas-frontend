@@ -23,10 +23,11 @@ export async function crearMiembro(_prevState: unknown, formData: FormData) {
       (formData.get("lugar_nacimiento_ciudad_id") as string) || undefined,
     p_fecha_bautismo: formData.get("fecha_bautismo") as string,
     p_lugar_bautismo: (formData.get("lugar_bautismo") as string)?.trim() || undefined,
-    p_ministro_bautizo_id: (formData.get("ministro_bautizo_id") as string) || undefined,
+    p_ministro_bautizo_nombre:
+      (formData.get("ministro_bautizo_nombre") as string)?.trim() || undefined,
     p_fecha_espiritu_santo: formData.get("fecha_espiritu_santo") as string,
-    p_ministro_testifico_id:
-      (formData.get("ministro_testifico_id") as string) || undefined,
+    p_ministro_testifico_nombre:
+      (formData.get("ministro_testifico_nombre") as string)?.trim() || undefined,
     p_nivel_estudios_id: (formData.get("nivel_estudios_id") as string) || undefined,
     p_profesion_ocupacion_id:
       (formData.get("profesion_ocupacion_id") as string) || undefined,

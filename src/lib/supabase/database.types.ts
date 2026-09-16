@@ -359,6 +359,7 @@ export type Database = {
           estado_id: string
           google_maps_link: string | null
           id: string
+          ministro_actual_id: string | null
           nombre: string
           pais_id: string
           telefono_casa_pastoral: string | null
@@ -373,6 +374,7 @@ export type Database = {
           estado_id: string
           google_maps_link?: string | null
           id?: string
+          ministro_actual_id?: string | null
           nombre: string
           pais_id: string
           telefono_casa_pastoral?: string | null
@@ -387,6 +389,7 @@ export type Database = {
           estado_id?: string
           google_maps_link?: string | null
           id?: string
+          ministro_actual_id?: string | null
           nombre?: string
           pais_id?: string
           telefono_casa_pastoral?: string | null
@@ -418,6 +421,13 @@ export type Database = {
             columns: ["estado_id"]
             isOneToOne: false
             referencedRelation: "estados"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "iglesias_ministro_actual_id_fkey"
+            columns: ["ministro_actual_id"]
+            isOneToOne: false
+            referencedRelation: "ministros"
             referencedColumns: ["id"]
           },
           {
@@ -490,8 +500,8 @@ export type Database = {
           lugar_nacimiento_ciudad_id: string | null
           lugar_nacimiento_estado_id: string | null
           lugar_nacimiento_pais_id: string | null
-          ministro_bautizo_id: string | null
-          ministro_testifico_id: string | null
+          ministro_bautizo_nombre: string | null
+          ministro_testifico_nombre: string | null
           nivel_estudios_id: string | null
           persona_id: string
           profesion_ocupacion_id: string | null
@@ -511,8 +521,8 @@ export type Database = {
           lugar_nacimiento_ciudad_id?: string | null
           lugar_nacimiento_estado_id?: string | null
           lugar_nacimiento_pais_id?: string | null
-          ministro_bautizo_id?: string | null
-          ministro_testifico_id?: string | null
+          ministro_bautizo_nombre?: string | null
+          ministro_testifico_nombre?: string | null
           nivel_estudios_id?: string | null
           persona_id: string
           profesion_ocupacion_id?: string | null
@@ -532,8 +542,8 @@ export type Database = {
           lugar_nacimiento_ciudad_id?: string | null
           lugar_nacimiento_estado_id?: string | null
           lugar_nacimiento_pais_id?: string | null
-          ministro_bautizo_id?: string | null
-          ministro_testifico_id?: string | null
+          ministro_bautizo_nombre?: string | null
+          ministro_testifico_nombre?: string | null
           nivel_estudios_id?: string | null
           persona_id?: string
           profesion_ocupacion_id?: string | null
@@ -579,20 +589,6 @@ export type Database = {
             columns: ["lugar_nacimiento_pais_id"]
             isOneToOne: false
             referencedRelation: "paises"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "miembros_ministro_bautizo_id_fkey"
-            columns: ["ministro_bautizo_id"]
-            isOneToOne: false
-            referencedRelation: "ministros"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "miembros_ministro_testifico_id_fkey"
-            columns: ["ministro_testifico_id"]
-            isOneToOne: false
-            referencedRelation: "ministros"
             referencedColumns: ["id"]
           },
           {
@@ -875,8 +871,8 @@ export type Database = {
           p_iglesia_id?: string
           p_lugar_bautismo?: string
           p_lugar_nacimiento_ciudad_id?: string
-          p_ministro_bautizo_id?: string
-          p_ministro_testifico_id?: string
+          p_ministro_bautizo_nombre?: string
+          p_ministro_testifico_nombre?: string
           p_nivel_estudios_id?: string
           p_nombres: string
           p_profesion_ocupacion_id?: string
