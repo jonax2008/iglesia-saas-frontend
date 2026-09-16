@@ -1,0 +1,41 @@
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/server";
+
+export default async function PaginaIglesias() {
+  const supabase = await createClient();
+  const { data: iglesias } = await supabase
+    .from("iglesias")
+    .select(
+      "id, nombre, calle_numero, ciudades(nombre), estados(nombre), distritos(numero, nombre)",
+    )
+    .order("nombre");
+
+  return (
+    <div className="max-w-2xl space-y-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-semibold text-slate-900">Iglesias</h1>
+        <Link
+          href="/iglesias/nueva"
+          className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white"
+        >
+          Nueva iglesia
+        </Link>
+      </div>
+
+      <ul className="divide-y divide-slate-200 rounded-lg bg-white shadow-sm">
+        {iglesias?.map((i) => (
+          <li key={i.id} className="px-4 py-3">
+            <p className="text-sm font-medium text-slate-900">{i.nombre}</p>
+            <p className="text-sm text-slate-500">
+              {i.calle_numero}, {i.ciudades?.nombre}, {i.estados?.nombre} — Distrito #
+              {i.distritos?.numero} {i.distritos?.nombre}
+            </p>
+          </li>
+        ))}
+        {!iglesias?.length ? (
+          <li className="px-4 py-3 text-sm text-slate-500">Aún no hay iglesias.</li>
+        ) : null}
+      </ul>
+    </div>
+  );
+}
