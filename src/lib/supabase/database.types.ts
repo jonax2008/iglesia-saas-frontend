@@ -39,6 +39,96 @@ export type Database = {
   }
   public: {
     Tables: {
+      asistencias: {
+        Row: {
+          categoria: string
+          creado_en: string
+          creado_por: string | null
+          fecha: string
+          id: string
+          miembro_id: string
+          valor: string
+        }
+        Insert: {
+          categoria: string
+          creado_en?: string
+          creado_por?: string | null
+          fecha: string
+          id?: string
+          miembro_id: string
+          valor: string
+        }
+        Update: {
+          categoria?: string
+          creado_en?: string
+          creado_por?: string | null
+          fecha?: string
+          id?: string
+          miembro_id?: string
+          valor?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "asistencias_creado_por_fkey"
+            columns: ["creado_por"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "asistencias_miembro_id_fkey"
+            columns: ["miembro_id"]
+            isOneToOne: false
+            referencedRelation: "miembros"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bitacora_asistencia: {
+        Row: {
+          asistencia_id: string
+          creado_en: string
+          id: string
+          observaciones: string
+          usuario_id: string
+          valor_anterior: string
+          valor_nuevo: string
+        }
+        Insert: {
+          asistencia_id: string
+          creado_en?: string
+          id?: string
+          observaciones: string
+          usuario_id: string
+          valor_anterior: string
+          valor_nuevo: string
+        }
+        Update: {
+          asistencia_id?: string
+          creado_en?: string
+          id?: string
+          observaciones?: string
+          usuario_id?: string
+          valor_anterior?: string
+          valor_nuevo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bitacora_asistencia_asistencia_id_fkey"
+            columns: ["asistencia_id"]
+            isOneToOne: false
+            referencedRelation: "asistencias"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bitacora_asistencia_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ciudades: {
         Row: {
           estado_id: string
@@ -854,6 +944,14 @@ export type Database = {
       contar_grupos_liderados: {
         Args: { p_miembro_id: string }
         Returns: number
+      }
+      corregir_asistencia: {
+        Args: {
+          p_asistencia_id: string
+          p_observaciones: string
+          p_valor_nuevo: string
+        }
+        Returns: undefined
       }
       crear_miembro: {
         Args: {

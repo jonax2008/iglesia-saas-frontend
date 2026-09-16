@@ -18,6 +18,8 @@ const NAV_ADMIN = [
   { href: "/profesiones-ocupaciones", label: "Profesiones/ocupaciones" },
 ];
 
+const NAV_ENCARGADO_GRUPO = [{ href: "/grupos", label: "Grupos" }];
+
 export default async function AppLayout({
   children,
 }: {
@@ -32,6 +34,8 @@ export default async function AppLayout({
   const esAdmin = ["super_admin", "ministro_en_turno", "encargado_estadistica"].includes(
     usuario.rol,
   );
+  const esEncargadoGrupo = ["encargado_grupo", "auxiliar_grupo"].includes(usuario.rol);
+  const itemsNav = esAdmin ? NAV_ADMIN : esEncargadoGrupo ? NAV_ENCARGADO_GRUPO : [];
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">
@@ -50,9 +54,9 @@ export default async function AppLayout({
       </header>
 
       <div className="flex flex-1 flex-col md:flex-row">
-        {esAdmin ? (
+        {itemsNav.length ? (
           <nav className="flex gap-2 overflow-x-auto border-b border-slate-200 bg-white px-4 py-2 md:w-56 md:flex-col md:border-b-0 md:border-r md:py-4">
-            {NAV_ADMIN.map((item) => (
+            {itemsNav.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}

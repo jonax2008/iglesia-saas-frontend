@@ -60,12 +60,20 @@ export default async function PaginaGrupos() {
 
           return (
             <li key={g.id} className="rounded-lg bg-white p-4 shadow-sm">
-              <p className="text-sm font-medium text-slate-900">
-                {g.nombre}{" "}
-                <span className="font-normal text-slate-500">
-                  ({g.edad_inicial}-{g.edad_final} años) — {g.iglesias?.nombre}
-                </span>
-              </p>
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-medium text-slate-900">
+                  {g.nombre}{" "}
+                  <span className="font-normal text-slate-500">
+                    ({g.edad_inicial}-{g.edad_final} años) — {g.iglesias?.nombre}
+                  </span>
+                </p>
+                <Link
+                  href={`/grupos/${g.id}/asistencia`}
+                  className="shrink-0 rounded-lg bg-slate-700 px-3 py-1 text-sm text-white"
+                >
+                  Tomar asistencia
+                </Link>
+              </div>
 
               <div className="mt-3 space-y-1">
                 <p className="text-sm text-slate-700">
