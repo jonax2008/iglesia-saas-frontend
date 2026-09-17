@@ -129,6 +129,116 @@ export type Database = {
           },
         ]
       }
+      bitacora_categoria_miembro: {
+        Row: {
+          categoria_anterior: string
+          categoria_nueva: string
+          creado_en: string
+          id: string
+          miembro_id: string
+          motivo: string
+          observaciones: string | null
+          usuario_id: string | null
+        }
+        Insert: {
+          categoria_anterior: string
+          categoria_nueva: string
+          creado_en?: string
+          id?: string
+          miembro_id: string
+          motivo: string
+          observaciones?: string | null
+          usuario_id?: string | null
+        }
+        Update: {
+          categoria_anterior?: string
+          categoria_nueva?: string
+          creado_en?: string
+          id?: string
+          miembro_id?: string
+          motivo?: string
+          observaciones?: string | null
+          usuario_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bitacora_categoria_miembro_miembro_id_fkey"
+            columns: ["miembro_id"]
+            isOneToOne: false
+            referencedRelation: "miembros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bitacora_categoria_miembro_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bitacora_movimientos_grupo: {
+        Row: {
+          creado_en: string
+          grupo_destino_id: string
+          grupo_origen_id: string | null
+          id: string
+          miembro_id: string
+          observaciones: string
+          respeta_criterio_edad: boolean
+          usuario_id: string
+        }
+        Insert: {
+          creado_en?: string
+          grupo_destino_id: string
+          grupo_origen_id?: string | null
+          id?: string
+          miembro_id: string
+          observaciones: string
+          respeta_criterio_edad: boolean
+          usuario_id: string
+        }
+        Update: {
+          creado_en?: string
+          grupo_destino_id?: string
+          grupo_origen_id?: string | null
+          id?: string
+          miembro_id?: string
+          observaciones?: string
+          respeta_criterio_edad?: boolean
+          usuario_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bitacora_movimientos_grupo_grupo_destino_id_fkey"
+            columns: ["grupo_destino_id"]
+            isOneToOne: false
+            referencedRelation: "grupos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bitacora_movimientos_grupo_grupo_origen_id_fkey"
+            columns: ["grupo_origen_id"]
+            isOneToOne: false
+            referencedRelation: "grupos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bitacora_movimientos_grupo_miembro_id_fkey"
+            columns: ["miembro_id"]
+            isOneToOne: false
+            referencedRelation: "miembros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bitacora_movimientos_grupo_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       ciudades: {
         Row: {
           estado_id: string
@@ -800,6 +910,47 @@ export type Database = {
         }
         Relationships: []
       }
+      notificaciones: {
+        Row: {
+          creado_en: string
+          entidad_id: string | null
+          entidad_tipo: string | null
+          id: string
+          leida: boolean
+          mensaje: string
+          tipo: string
+          usuario_id: string
+        }
+        Insert: {
+          creado_en?: string
+          entidad_id?: string | null
+          entidad_tipo?: string | null
+          id?: string
+          leida?: boolean
+          mensaje: string
+          tipo: string
+          usuario_id: string
+        }
+        Update: {
+          creado_en?: string
+          entidad_id?: string | null
+          entidad_tipo?: string | null
+          id?: string
+          leida?: boolean
+          mensaje?: string
+          tipo?: string
+          usuario_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notificaciones_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       paises: {
         Row: {
           id: string
@@ -941,6 +1092,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      actualizar_categorias_miembros: {
+        Args: { p_iglesia_id?: string }
+        Returns: number
+      }
       contar_grupos_liderados: {
         Args: { p_miembro_id: string }
         Returns: number
@@ -1000,8 +1155,17 @@ export type Database = {
         Returns: string
       }
       es_encargado_de_grupo: { Args: { p_grupo_id: string }; Returns: boolean }
+      generar_avisos_cambio_grupo: { Args: never; Returns: number }
       iglesia_actual: { Args: never; Returns: string }
       miembro_actual: { Args: never; Returns: string }
+      mover_miembro_grupo: {
+        Args: {
+          p_grupo_destino_id: string
+          p_miembro_id: string
+          p_observaciones: string
+        }
+        Returns: boolean
+      }
       rol_actual: { Args: never; Returns: string }
     }
     Enums: {

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import { obtenerUsuarioActual } from "@/lib/auth";
+import { createClient } from "@/lib/supabase/server";
 import { cerrarSesion } from "./actions";
 
 const NAV_ADMIN = [
@@ -37,20 +38,37 @@ export default async function AppLayout({
   const esEncargadoGrupo = ["encargado_grupo", "auxiliar_grupo"].includes(usuario.rol);
   const itemsNav = esAdmin ? NAV_ADMIN : esEncargadoGrupo ? NAV_ENCARGADO_GRUPO : [];
 
+  const supabase = await createClient();
+  const { count: noLeidas } = await supabase
+    .from("notificaciones")
+    .select("id", { count: "exact", head: true })
+    .eq("usuario_id", usuario.id)
+    .eq("leida", false);
+
   return (
     <div className="flex min-h-screen flex-col bg-slate-50">
       <header className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3">
         <span className="text-base font-semibold text-slate-900">
           Estadística Iglesia
         </span>
-        <form action={cerrarSesion}>
-          <button
-            type="submit"
-            className="text-sm font-medium text-slate-600 underline"
-          >
-            Salir ({usuario.correo})
-          </button>
-        </form>
+        <div className="flex items-center gap-4">
+          <Link href="/notificaciones" className="relative text-sm font-medium text-slate-600">
+            Notificaciones
+            {noLeidas ? (
+              <span className="absolute -right-3 -top-2 rounded-full bg-red-600 px-1.5 py-0.5 text-xs font-semibold text-white">
+                {noLeidas}
+              </span>
+            ) : null}
+          </Link>
+          <form action={cerrarSesion}>
+            <button
+              type="submit"
+              className="text-sm font-medium text-slate-600 underline"
+            >
+              Salir ({usuario.correo})
+            </button>
+          </form>
+        </div>
       </header>
 
       <div className="flex flex-1 flex-col md:flex-row">

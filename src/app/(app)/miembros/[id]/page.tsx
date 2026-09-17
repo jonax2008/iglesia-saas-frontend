@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { obtenerUsuarioActual } from "@/lib/auth";
 import { FormularioEditarMiembro } from "./formulario";
+import { FormularioMoverGrupo } from "./mover-grupo/formulario";
 
 export default async function PaginaDetalleMiembro({
   params,
@@ -19,6 +21,11 @@ export default async function PaginaDetalleMiembro({
     .maybeSingle();
 
   if (!miembro) notFound();
+
+  const usuario = await obtenerUsuarioActual();
+  const puedeMoverGrupo = ["super_admin", "ministro_en_turno", "encargado_estadistica"].includes(
+    usuario?.rol ?? "",
+  );
 
   const [
     { data: paises },
@@ -50,6 +57,15 @@ export default async function PaginaDetalleMiembro({
         </h1>
         <p className="mt-1 text-sm text-slate-600">{miembro.iglesias?.nombre}</p>
       </div>
+
+      {puedeMoverGrupo ? (
+        <FormularioMoverGrupo
+          miembroId={miembro.id}
+          grupoActualId={miembro.grupo_id}
+          fechaNacimiento={miembro.personas?.fecha_nacimiento ?? ""}
+          grupos={grupos ?? []}
+        />
+      ) : null}
 
       <div>
         <h2 className="mb-3 text-sm font-semibold text-slate-700">Editar información</h2>
