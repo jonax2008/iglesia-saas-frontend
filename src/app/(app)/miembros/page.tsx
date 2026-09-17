@@ -22,7 +22,7 @@ export default async function PaginaMiembros() {
         <h1 className="text-xl font-semibold text-slate-900">Miembros</h1>
         <Link
           href="/miembros/nuevo"
-          className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white"
+          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white"
         >
           Nuevo miembro
         </Link>

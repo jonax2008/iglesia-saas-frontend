@@ -156,7 +156,7 @@ export function FormularioEditarIglesia({
       <button
         type="submit"
         disabled={enProceso}
-        className="w-full rounded-lg bg-slate-900 px-4 py-2 text-base font-medium text-white disabled:opacity-50 sm:w-auto"
+        className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-base font-medium text-white disabled:opacity-50 sm:w-auto"
       >
         {enProceso ? "Guardando…" : "Guardar cambios"}
       </button>

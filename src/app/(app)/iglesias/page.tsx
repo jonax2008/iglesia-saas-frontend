@@ -1,8 +1,11 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { obtenerUsuarioActual } from "@/lib/auth";
 
 export default async function PaginaIglesias() {
   const supabase = await createClient();
+  const usuario = await obtenerUsuarioActual();
+  const puedeCrear = usuario?.rol === "super_admin";
   const { data: iglesias } = await supabase
     .from("iglesias")
     .select(
@@ -14,12 +17,14 @@ export default async function PaginaIglesias() {
     <div className="max-w-2xl space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold text-slate-900">Iglesias</h1>
-        <Link
-          href="/iglesias/nueva"
-          className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white"
-        >
-          Nueva iglesia
-        </Link>
+        {puedeCrear ? (
+          <Link
+            href="/iglesias/nueva"
+            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white"
+          >
+            Nueva iglesia
+          </Link>
+        ) : null}
       </div>
 
       <ul className="divide-y divide-slate-200 rounded-lg bg-white shadow-sm">

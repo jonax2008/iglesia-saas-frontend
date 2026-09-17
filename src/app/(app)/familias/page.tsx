@@ -41,7 +41,7 @@ export default async function PaginaFamilias() {
         <h1 className="text-xl font-semibold text-slate-900">Familias</h1>
         <Link
           href="/familias/nueva"
-          className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white"
+          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white"
         >
           Nueva familia
         </Link>

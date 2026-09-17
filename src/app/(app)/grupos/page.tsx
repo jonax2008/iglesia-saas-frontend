@@ -42,7 +42,7 @@ export default async function PaginaGrupos() {
         <h1 className="text-xl font-semibold text-slate-900">Grupos</h1>
         <Link
           href="/grupos/nuevo"
-          className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white"
+          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white"
         >
           Nuevo grupo
         </Link>

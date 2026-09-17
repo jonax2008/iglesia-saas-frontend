@@ -24,7 +24,7 @@ export function FormularioNuevaProfesionOcupacion() {
       <button
         type="submit"
         disabled={enProceso}
-        className="rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
+        className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
       >
         Agregar
       </button>

@@ -54,7 +54,7 @@ export default function PaginaRegistro() {
         <button
           type="submit"
           disabled={enProceso}
-          className="w-full rounded-lg bg-slate-900 px-3 py-2 text-base font-medium text-white disabled:opacity-50"
+          className="w-full rounded-lg bg-indigo-600 px-3 py-2 text-base font-medium text-white disabled:opacity-50"
         >
           {enProceso ? "Creando…" : "Crear cuenta"}
         </button>
