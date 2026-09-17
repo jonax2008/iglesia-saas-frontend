@@ -1,14 +1,16 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 
 export default async function PaginaMinistros() {
   const supabase = await createClient();
-  const { data: ministros } = await supabase
+  const { data: ministros, error } = await supabase
     .from("ministros")
     .select(
       "id, correo_institucional, fecha_inicio_administracion, fecha_fin_administracion, personas(nombres, apellido_paterno, apellido_materno), iglesias!ministros_iglesia_id_fkey(nombre), grados_ministros(nombre)",
     )
     .order("fecha_inicio_administracion", { ascending: false });
+  if (error) await registrarErrorFatal(error, { ruta: "/ministros", operacion: "listar ministros" });
 
   return (
     <div className="max-w-2xl space-y-6">

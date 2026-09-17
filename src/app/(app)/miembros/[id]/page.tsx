@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { obtenerUsuarioActual } from "@/lib/auth";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { FormularioEditarMiembro } from "./formulario";
 import { FormularioMoverGrupo } from "./mover-grupo/formulario";
 
@@ -12,13 +13,14 @@ export default async function PaginaDetalleMiembro({
   const { id } = await params;
   const supabase = await createClient();
 
-  const { data: miembro } = await supabase
+  const { data: miembro, error } = await supabase
     .from("miembros")
     .select(
       "id, persona_id, categoria, correo_personal, grupo_id, fecha_bautismo, lugar_bautismo, ministro_bautizo_nombre, fecha_espiritu_santo, ministro_testifico_nombre, nivel_estudios_id, profesion_ocupacion_id, estado_civil_id, credencial_vigente_hasta, lugar_nacimiento_pais_id, lugar_nacimiento_estado_id, lugar_nacimiento_ciudad_id, iglesias(nombre), personas(nombres, apellido_paterno, apellido_materno, fecha_nacimiento, sexo, telefono_celular, curp)",
     )
     .eq("id", id)
     .maybeSingle();
+  if (error) await registrarErrorFatal(error, { ruta: `/miembros/${id}`, operacion: "cargar detalle de miembro" });
 
   if (!miembro) notFound();
 

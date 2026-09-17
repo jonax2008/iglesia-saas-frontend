@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 export async function guardarAsistencia(_prevState: unknown, formData: FormData) {
   const grupoId = formData.get("grupo_id") as string;
@@ -12,12 +13,20 @@ export async function guardarAsistencia(_prevState: unknown, formData: FormData)
 
   const supabase = await createClient();
 
-  const { data: existentes } = await supabase
+  const { data: existentes, error: errorExistentes } = await supabase
     .from("asistencias")
     .select("id, miembro_id, valor")
     .in("miembro_id", miembroIds)
     .eq("fecha", fecha)
     .eq("categoria", categoria);
+
+  if (errorExistentes) {
+    await registrarErrorAccion(errorExistentes, {
+      ruta: `/grupos/${grupoId}/asistencia`,
+      operacion: "cargar asistencia existente",
+    });
+    return { error: errorExistentes.message };
+  }
 
   const existentePorMiembro = new Map(
     (existentes ?? []).map((a) => [a.miembro_id, a]),
@@ -48,7 +57,13 @@ export async function guardarAsistencia(_prevState: unknown, formData: FormData)
 
   if (nuevos.length) {
     const { error } = await supabase.from("asistencias").insert(nuevos);
-    if (error) return { error: error.message };
+    if (error) {
+      await registrarErrorAccion(error, {
+        ruta: `/grupos/${grupoId}/asistencia`,
+        operacion: "registrar asistencia nueva",
+      });
+      return { error: error.message };
+    }
   }
 
   for (const correccion of correcciones) {
@@ -57,7 +72,13 @@ export async function guardarAsistencia(_prevState: unknown, formData: FormData)
       p_valor_nuevo: correccion.valor_nuevo,
       p_observaciones: observaciones,
     });
-    if (error) return { error: error.message };
+    if (error) {
+      await registrarErrorAccion(error, {
+        ruta: `/grupos/${grupoId}/asistencia`,
+        operacion: "corregir asistencia",
+      });
+      return { error: error.message };
+    }
   }
 
   revalidatePath(`/grupos/${grupoId}/asistencia`);

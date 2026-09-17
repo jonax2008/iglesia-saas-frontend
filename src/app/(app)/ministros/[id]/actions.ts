@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 export async function actualizarMinistro(_prevState: unknown, formData: FormData) {
   const id = formData.get("id") as string;
@@ -25,7 +26,13 @@ export async function actualizarMinistro(_prevState: unknown, formData: FormData
     })
     .eq("id", personaId);
 
-  if (errorPersona) return { error: errorPersona.message };
+  if (errorPersona) {
+    await registrarErrorAccion(errorPersona, {
+      ruta: `/ministros/${id}`,
+      operacion: "actualizar datos personales de ministro",
+    });
+    return { error: errorPersona.message };
+  }
 
   const { error: errorMinistro } = await supabase
     .from("ministros")
@@ -48,7 +55,13 @@ export async function actualizarMinistro(_prevState: unknown, formData: FormData
     })
     .eq("id", id);
 
-  if (errorMinistro) return { error: errorMinistro.message };
+  if (errorMinistro) {
+    await registrarErrorAccion(errorMinistro, {
+      ruta: `/ministros/${id}`,
+      operacion: "actualizar datos de ministerio",
+    });
+    return { error: errorMinistro.message };
+  }
 
   revalidatePath(`/ministros/${id}`);
   revalidatePath("/ministros");

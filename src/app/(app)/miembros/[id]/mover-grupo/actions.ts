@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 export async function moverDeGrupo(_prevState: unknown, formData: FormData) {
   const miembroId = formData.get("miembro_id") as string;
@@ -15,7 +16,13 @@ export async function moverDeGrupo(_prevState: unknown, formData: FormData) {
     p_observaciones: observaciones,
   });
 
-  if (error) return { error: error.message };
+  if (error) {
+    await registrarErrorAccion(error, {
+      ruta: `/miembros/${miembroId}`,
+      operacion: "mover miembro de grupo",
+    });
+    return { error: error.message };
+  }
 
   revalidatePath(`/miembros/${miembroId}`);
   return {

@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { agregarHijo, quitarHijo } from "./actions";
 
 export default async function PaginaFamilias() {
   const supabase = await createClient();
 
-  const [{ data: familias }, { data: miembros }, { data: hijos }] = await Promise.all([
+  const [{ data: familias, error }, { data: miembros }, { data: hijos }] = await Promise.all([
     supabase
       .from("familias")
       .select(
@@ -20,6 +21,7 @@ export default async function PaginaFamilias() {
       .from("familia_hijos")
       .select("familia_id, miembro_id, miembros(personas(nombres, apellido_paterno))"),
   ]);
+  if (error) await registrarErrorFatal(error, { ruta: "/familias", operacion: "listar familias" });
 
   const miembrosPorIglesia = new Map<string, typeof miembros>();
   for (const m of miembros ?? []) {

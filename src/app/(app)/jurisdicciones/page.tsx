@@ -1,13 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { eliminarJurisdiccion } from "./actions";
 import { FormularioNuevaJurisdiccion } from "./formulario-nueva";
 
 export default async function PaginaJurisdicciones() {
   const supabase = await createClient();
-  const { data: jurisdicciones } = await supabase
+  const { data: jurisdicciones, error } = await supabase
     .from("jurisdicciones")
     .select("id, nombre")
     .order("nombre");
+  if (error) await registrarErrorFatal(error, { ruta: "/jurisdicciones", operacion: "listar jurisdicciones" });
 
   return (
     <div className="max-w-xl space-y-6">

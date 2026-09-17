@@ -654,6 +654,53 @@ export type Database = {
         }
         Relationships: []
       }
+      logs_errores: {
+        Row: {
+          codigo: string | null
+          contexto: Json | null
+          creado_en: string
+          detalles: string | null
+          hint: string | null
+          id: string
+          mensaje: string
+          operacion: string
+          ruta: string
+          usuario_id: string | null
+        }
+        Insert: {
+          codigo?: string | null
+          contexto?: Json | null
+          creado_en?: string
+          detalles?: string | null
+          hint?: string | null
+          id?: string
+          mensaje: string
+          operacion: string
+          ruta: string
+          usuario_id?: string | null
+        }
+        Update: {
+          codigo?: string | null
+          contexto?: Json | null
+          creado_en?: string
+          detalles?: string | null
+          hint?: string | null
+          id?: string
+          mensaje?: string
+          operacion?: string
+          ruta?: string
+          usuario_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "logs_errores_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "usuarios"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       miembro_comisiones: {
         Row: {
           comision_id: string

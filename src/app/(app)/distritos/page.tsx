@@ -1,16 +1,18 @@
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { eliminarDistrito } from "./actions";
 import { FormularioNuevoDistrito } from "./formulario-nuevo";
 
 export default async function PaginaDistritos() {
   const supabase = await createClient();
-  const [{ data: distritos }, { data: jurisdicciones }] = await Promise.all([
+  const [{ data: distritos, error }, { data: jurisdicciones }] = await Promise.all([
     supabase
       .from("distritos")
       .select("id, numero, nombre, jurisdicciones(nombre)")
       .order("numero"),
     supabase.from("jurisdicciones").select("id, nombre").order("nombre"),
   ]);
+  if (error) await registrarErrorFatal(error, { ruta: "/distritos", operacion: "listar distritos" });
 
   return (
     <div className="max-w-2xl space-y-6">

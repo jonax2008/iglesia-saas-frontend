@@ -2,6 +2,7 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { obtenerUsuarioActual } from "@/lib/auth";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 export async function ejecutarAutomatizaciones() {
   const supabase = await createClient();
@@ -11,12 +12,24 @@ export async function ejecutarAutomatizaciones() {
     "actualizar_categorias_miembros",
     usuario?.rol === "super_admin" ? {} : { p_iglesia_id: usuario?.iglesiaId ?? undefined },
   );
-  if (errorCategorias) return { error: errorCategorias.message };
+  if (errorCategorias) {
+    await registrarErrorAccion(errorCategorias, {
+      ruta: "/",
+      operacion: "actualizar categorías de miembros (manual)",
+    });
+    return { error: errorCategorias.message };
+  }
 
   const { data: avisos, error: errorAvisos } = await supabase.rpc(
     "generar_avisos_cambio_grupo",
   );
-  if (errorAvisos) return { error: errorAvisos.message };
+  if (errorAvisos) {
+    await registrarErrorAccion(errorAvisos, {
+      ruta: "/",
+      operacion: "generar avisos de cambio de grupo (manual)",
+    });
+    return { error: errorAvisos.message };
+  }
 
   return { error: "", exito: true, actualizados, avisos };
 }

@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 export async function crearFamilia(_prevState: unknown, formData: FormData) {
   const nombre = (formData.get("nombre") as string)?.trim();
@@ -21,7 +22,10 @@ export async function crearFamilia(_prevState: unknown, formData: FormData) {
     madre_miembro_id: madreId,
   });
 
-  if (error) return { error: error.message };
+  if (error) {
+    await registrarErrorAccion(error, { ruta: "/familias/nueva", operacion: "crear familia" });
+    return { error: error.message };
+  }
 
   redirect("/familias");
 }

@@ -1,11 +1,14 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
-import { agregarAuxiliar, asignarEncargado, quitarAuxiliar } from "./actions";
+import { registrarErrorFatal } from "@/lib/log-error";
+import { quitarAuxiliar } from "./actions";
+import { AsignarEncargadoForm } from "./asignar-encargado-form";
+import { AgregarAuxiliarForm } from "./agregar-auxiliar-form";
 
 export default async function PaginaGrupos() {
   const supabase = await createClient();
 
-  const [{ data: grupos }, { data: miembros }, { data: auxiliares }] =
+  const [{ data: grupos, error }, { data: miembros }, { data: auxiliares }] =
     await Promise.all([
       supabase
         .from("grupos")
@@ -21,6 +24,7 @@ export default async function PaginaGrupos() {
         .from("grupo_auxiliares")
         .select("grupo_id, miembro_id, miembros(personas(nombres, apellido_paterno))"),
     ]);
+  if (error) await registrarErrorFatal(error, { ruta: "/grupos", operacion: "listar grupos" });
 
   const miembrosPorIglesia = new Map<string, typeof miembros>();
   for (const m of miembros ?? []) {
@@ -94,26 +98,7 @@ export default async function PaginaGrupos() {
                     <span className="text-slate-400">sin asignar</span>
                   )}
                 </p>
-                <form action={asignarEncargado} className="flex flex-wrap gap-2">
-                  <input type="hidden" name="grupo_id" value={g.id} />
-                  <select
-                    name="miembro_id"
-                    className="rounded-lg border border-slate-300 px-2 py-1 text-sm"
-                  >
-                    <option value="">Sin encargado</option>
-                    {miembrosIglesia.map((m) => (
-                      <option key={m.id} value={m.id}>
-                        {m.personas?.nombres} {m.personas?.apellido_paterno}
-                      </option>
-                    ))}
-                  </select>
-                  <button
-                    type="submit"
-                    className="rounded-lg bg-slate-700 px-3 py-1 text-sm text-white"
-                  >
-                    Asignar
-                  </button>
-                </form>
+                <AsignarEncargadoForm grupoId={g.id} miembros={miembrosIglesia} />
               </div>
 
               <div className="mt-3 space-y-1">
@@ -138,27 +123,7 @@ export default async function PaginaGrupos() {
                   ))}
                 </ul>
                 {auxiliaresGrupo.length < 2 ? (
-                  <form action={agregarAuxiliar} className="flex flex-wrap gap-2">
-                    <input type="hidden" name="grupo_id" value={g.id} />
-                    <select
-                      name="miembro_id"
-                      required
-                      className="rounded-lg border border-slate-300 px-2 py-1 text-sm"
-                    >
-                      <option value="">Selecciona…</option>
-                      {disponibles.map((m) => (
-                        <option key={m.id} value={m.id}>
-                          {m.personas?.nombres} {m.personas?.apellido_paterno}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      type="submit"
-                      className="rounded-lg bg-slate-700 px-3 py-1 text-sm text-white"
-                    >
-                      Agregar auxiliar
-                    </button>
-                  </form>
+                  <AgregarAuxiliarForm grupoId={g.id} disponibles={disponibles} />
                 ) : null}
               </div>
             </li>

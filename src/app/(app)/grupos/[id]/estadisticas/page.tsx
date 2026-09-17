@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { PanelEstadisticasGrupo } from "./panel";
 
 export default async function PaginaEstadisticasGrupo({
@@ -10,11 +11,12 @@ export default async function PaginaEstadisticasGrupo({
   const { id } = await params;
   const supabase = await createClient();
 
-  const { data: grupo } = await supabase
+  const { data: grupo, error } = await supabase
     .from("grupos")
     .select("id, nombre, iglesias(nombre)")
     .eq("id", id)
     .maybeSingle();
+  if (error) await registrarErrorFatal(error, { ruta: `/grupos/${id}/estadisticas`, operacion: "cargar grupo para estadísticas" });
 
   if (!grupo) notFound();
 

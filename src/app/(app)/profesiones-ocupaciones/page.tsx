@@ -1,13 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { eliminarProfesionOcupacion } from "./actions";
 import { FormularioNuevaProfesionOcupacion } from "./formulario-nueva";
 
 export default async function PaginaProfesionesOcupaciones() {
   const supabase = await createClient();
-  const { data: profesiones } = await supabase
+  const { data: profesiones, error } = await supabase
     .from("profesiones_ocupaciones")
     .select("id, nombre")
     .order("nombre");
+  if (error) await registrarErrorFatal(error, { ruta: "/profesiones-ocupaciones", operacion: "listar profesiones y ocupaciones" });
 
   return (
     <div className="max-w-xl space-y-6">

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 export async function actualizarIglesia(_prevState: unknown, formData: FormData) {
   const id = formData.get("id") as string;
@@ -38,7 +39,10 @@ export async function actualizarIglesia(_prevState: unknown, formData: FormData)
     })
     .eq("id", id);
 
-  if (error) return { error: error.message };
+  if (error) {
+    await registrarErrorAccion(error, { ruta: `/iglesias/${id}`, operacion: "actualizar iglesia" });
+    return { error: error.message };
+  }
 
   revalidatePath(`/iglesias/${id}`);
   revalidatePath("/iglesias");

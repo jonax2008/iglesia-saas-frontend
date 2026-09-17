@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 /**
  * Cards de retirados temporales / en archivo (regla de negocio 5). Los
@@ -10,7 +11,10 @@ import { createClient } from "@/lib/supabase/server";
 export async function DashboardCategorias() {
   const supabase = await createClient();
 
-  const [{ count: retiradosTemporales }, { count: enArchivo }] = await Promise.all([
+  const [
+    { count: retiradosTemporales, error: errorRetirados },
+    { count: enArchivo, error: errorArchivo },
+  ] = await Promise.all([
     supabase
       .from("miembros")
       .select("id", { count: "exact", head: true })
@@ -20,6 +24,16 @@ export async function DashboardCategorias() {
       .select("id", { count: "exact", head: true })
       .eq("categoria", "archivo"),
   ]);
+
+  const error = errorRetirados ?? errorArchivo;
+  if (error) {
+    await registrarErrorAccion(error, { ruta: "/", operacion: "cargar cards de categorías" });
+    return (
+      <p className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
+        No se pudieron cargar los conteos de retirados/archivo. Ya quedó registrado.
+      </p>
+    );
+  }
 
   return (
     <div className="grid grid-cols-2 gap-3">

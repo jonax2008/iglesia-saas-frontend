@@ -1,12 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { marcarLeida, marcarTodasLeidas } from "./actions";
 
 export default async function PaginaNotificaciones() {
   const supabase = await createClient();
-  const { data: notificaciones } = await supabase
+  const { data: notificaciones, error } = await supabase
     .from("notificaciones")
     .select("id, mensaje, leida, creado_en")
     .order("creado_en", { ascending: false });
+  if (error) await registrarErrorFatal(error, { ruta: "/notificaciones", operacion: "listar notificaciones" });
 
   const hayNoLeidas = (notificaciones ?? []).some((n) => !n.leida);
 

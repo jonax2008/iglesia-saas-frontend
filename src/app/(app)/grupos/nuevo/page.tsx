@@ -1,12 +1,14 @@
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { FormularioNuevoGrupo } from "./formulario";
 
 export default async function PaginaNuevoGrupo() {
   const supabase = await createClient();
-  const { data: iglesias } = await supabase
+  const { data: iglesias, error } = await supabase
     .from("iglesias")
     .select("id, nombre")
     .order("nombre");
+  if (error) await registrarErrorFatal(error, { ruta: "/grupos/nuevo", operacion: "cargar iglesias para alta de grupo" });
 
   return (
     <div className="space-y-6">

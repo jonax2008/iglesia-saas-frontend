@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 export async function crearGrupo(_prevState: unknown, formData: FormData) {
   const nombre = (formData.get("nombre") as string)?.trim();
@@ -24,7 +25,10 @@ export async function crearGrupo(_prevState: unknown, formData: FormData) {
     edad_final: edadFinal,
   });
 
-  if (error) return { error: error.message };
+  if (error) {
+    await registrarErrorAccion(error, { ruta: "/grupos/nuevo", operacion: "crear grupo" });
+    return { error: error.message };
+  }
 
   redirect("/grupos");
 }

@@ -2,8 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
-export async function asignarEncargado(formData: FormData) {
+export async function asignarEncargado(_prevState: unknown, formData: FormData) {
   const grupoId = formData.get("grupo_id") as string;
   const miembroId = (formData.get("miembro_id") as string) || null;
 
@@ -14,15 +15,17 @@ export async function asignarEncargado(formData: FormData) {
     .eq("id", grupoId);
 
   if (error) {
-    console.error("No se pudo asignar el encargado:", error.message);
+    await registrarErrorAccion(error, { ruta: "/grupos", operacion: "asignar encargado de grupo" });
+    return { error: error.message };
   }
   revalidatePath("/grupos");
+  return { error: "" };
 }
 
-export async function agregarAuxiliar(formData: FormData) {
+export async function agregarAuxiliar(_prevState: unknown, formData: FormData) {
   const grupoId = formData.get("grupo_id") as string;
   const miembroId = formData.get("miembro_id") as string;
-  if (!miembroId) return;
+  if (!miembroId) return { error: "Selecciona un miembro." };
 
   const supabase = await createClient();
   const { error } = await supabase
@@ -30,9 +33,11 @@ export async function agregarAuxiliar(formData: FormData) {
     .insert({ grupo_id: grupoId, miembro_id: miembroId });
 
   if (error) {
-    console.error("No se pudo agregar el auxiliar:", error.message);
+    await registrarErrorAccion(error, { ruta: "/grupos", operacion: "agregar auxiliar de grupo" });
+    return { error: error.message };
   }
   revalidatePath("/grupos");
+  return { error: "" };
 }
 
 export async function quitarAuxiliar(formData: FormData) {
@@ -40,11 +45,14 @@ export async function quitarAuxiliar(formData: FormData) {
   const miembroId = formData.get("miembro_id") as string;
 
   const supabase = await createClient();
-  await supabase
+  const { error } = await supabase
     .from("grupo_auxiliares")
     .delete()
     .eq("grupo_id", grupoId)
     .eq("miembro_id", miembroId);
 
+  if (error) {
+    await registrarErrorAccion(error, { ruta: "/grupos", operacion: "quitar auxiliar de grupo" });
+  }
   revalidatePath("/grupos");
 }

@@ -1,17 +1,10 @@
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { FormularioNuevoMiembro } from "./formulario";
 
 export default async function PaginaNuevoMiembro() {
   const supabase = await createClient();
-  const [
-    { data: paises },
-    { data: iglesias },
-    { data: grupos },
-    { data: nivelesEstudio },
-    { data: estadosCiviles },
-    { data: profesiones },
-    { data: comisiones },
-  ] = await Promise.all([
+  const resultados = await Promise.all([
     supabase.from("paises").select("id, nombre").order("nombre"),
     supabase.from("iglesias").select("id, nombre").order("nombre"),
     supabase
@@ -23,6 +16,22 @@ export default async function PaginaNuevoMiembro() {
     supabase.from("profesiones_ocupaciones").select("id, nombre").order("nombre"),
     supabase.from("comisiones").select("id, nombre").order("nombre"),
   ]);
+  const errorCatalogos = resultados.find((r) => r.error)?.error;
+  if (errorCatalogos) {
+    await registrarErrorFatal(errorCatalogos, {
+      ruta: "/miembros/nuevo",
+      operacion: "cargar catálogos para alta de miembro",
+    });
+  }
+  const [
+    { data: paises },
+    { data: iglesias },
+    { data: grupos },
+    { data: nivelesEstudio },
+    { data: estadosCiviles },
+    { data: profesiones },
+    { data: comisiones },
+  ] = resultados;
 
   return (
     <div className="space-y-6">

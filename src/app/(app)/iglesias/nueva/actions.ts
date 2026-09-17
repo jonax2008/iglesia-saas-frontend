@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 export async function crearIglesia(_prevState: unknown, formData: FormData) {
   const nombre = (formData.get("nombre") as string)?.trim();
@@ -37,7 +38,10 @@ export async function crearIglesia(_prevState: unknown, formData: FormData) {
     telefono_casa_pastoral: telefonoCasaPastoral || null,
   });
 
-  if (error) return { error: error.message };
+  if (error) {
+    await registrarErrorAccion(error, { ruta: "/iglesias/nueva", operacion: "crear iglesia" });
+    return { error: error.message };
+  }
 
   redirect("/iglesias");
 }

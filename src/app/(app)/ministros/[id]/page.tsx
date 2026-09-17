@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { obtenerUsuarioActual } from "@/lib/auth";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { FormularioEditarMinistro } from "./formulario";
 import { ListaReportesMinistro } from "./reportes/lista";
 
@@ -12,13 +13,14 @@ export default async function PaginaDetalleMinistro({
   const { id } = await params;
   const supabase = await createClient();
 
-  const { data: ministro } = await supabase
+  const { data: ministro, error } = await supabase
     .from("ministros")
     .select(
       "id, persona_id, correo_institucional, fecha_inicio_administracion, fecha_fin_administracion, grado_id, es_pastor_distrital, distrito_a_cargo_id, es_pastor_jurisdiccional, jurisdiccion_a_cargo_id, iglesias!ministros_iglesia_id_fkey(nombre), personas(nombres, apellido_paterno, apellido_materno, fecha_nacimiento, sexo, telefono_celular, curp)",
     )
     .eq("id", id)
     .maybeSingle();
+  if (error) await registrarErrorFatal(error, { ruta: `/ministros/${id}`, operacion: "cargar detalle de ministro" });
 
   if (!ministro) notFound();
 

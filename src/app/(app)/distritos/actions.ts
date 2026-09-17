@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 export async function crearDistrito(_prevState: unknown, formData: FormData) {
   const numero = Number(formData.get("numero"));
@@ -17,7 +18,10 @@ export async function crearDistrito(_prevState: unknown, formData: FormData) {
     .from("distritos")
     .insert({ numero, nombre, jurisdiccion_id: jurisdiccionId });
 
-  if (error) return { error: error.message };
+  if (error) {
+    await registrarErrorAccion(error, { ruta: "/distritos", operacion: "crear distrito" });
+    return { error: error.message };
+  }
 
   revalidatePath("/distritos");
   return { error: "" };
@@ -26,6 +30,9 @@ export async function crearDistrito(_prevState: unknown, formData: FormData) {
 export async function eliminarDistrito(formData: FormData) {
   const id = formData.get("id") as string;
   const supabase = await createClient();
-  await supabase.from("distritos").delete().eq("id", id);
+  const { error } = await supabase.from("distritos").delete().eq("id", id);
+  if (error) {
+    await registrarErrorAccion(error, { ruta: "/distritos", operacion: "eliminar distrito" });
+  }
   revalidatePath("/distritos");
 }

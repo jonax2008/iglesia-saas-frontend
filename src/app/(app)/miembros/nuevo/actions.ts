@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 export async function crearMiembro(_prevState: unknown, formData: FormData) {
   const comisionIds = formData.getAll("comision_ids") as string[];
@@ -37,7 +38,10 @@ export async function crearMiembro(_prevState: unknown, formData: FormData) {
     p_comision_ids: comisionIds.length ? comisionIds : undefined,
   });
 
-  if (error) return { error: error.message };
+  if (error) {
+    await registrarErrorAccion(error, { ruta: "/miembros/nuevo", operacion: "crear miembro" });
+    return { error: error.message };
+  }
   if (!miembroId) return { error: "No se pudo crear el miembro." };
 
   redirect("/miembros");

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 export async function generarReporte(formData: FormData) {
   const ministroId = formData.get("ministro_id") as string;
@@ -10,7 +11,10 @@ export async function generarReporte(formData: FormData) {
     p_ministro_id: ministroId,
   });
   if (error) {
-    console.error("No se pudo generar el reporte:", error.message);
+    await registrarErrorAccion(error, {
+      ruta: `/ministros/${ministroId}`,
+      operacion: "generar reporte de administración",
+    });
   }
   revalidatePath(`/ministros/${ministroId}`);
 }

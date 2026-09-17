@@ -1,13 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { eliminarGradoMinistro } from "./actions";
 import { FormularioNuevoGrado } from "./formulario-nuevo";
 
 export default async function PaginaGradosMinistros() {
   const supabase = await createClient();
-  const { data: grados } = await supabase
+  const { data: grados, error } = await supabase
     .from("grados_ministros")
     .select("id, nombre")
     .order("nombre");
+  if (error) await registrarErrorFatal(error, { ruta: "/grados-ministros", operacion: "listar grados de ministro" });
 
   return (
     <div className="max-w-xl space-y-6">

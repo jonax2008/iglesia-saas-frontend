@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 
 const ETIQUETA_CATEGORIA: Record<string, string> = {
   activo: "Activo",
@@ -9,12 +10,13 @@ const ETIQUETA_CATEGORIA: Record<string, string> = {
 
 export default async function PaginaMiembros() {
   const supabase = await createClient();
-  const { data: miembros } = await supabase
+  const { data: miembros, error } = await supabase
     .from("miembros")
     .select(
       "id, categoria, correo_personal, personas(nombres, apellido_paterno, apellido_materno), iglesias(nombre), grupos(nombre)",
     )
     .order("categoria");
+  if (error) await registrarErrorFatal(error, { ruta: "/miembros", operacion: "listar miembros" });
 
   return (
     <div className="max-w-2xl space-y-6">

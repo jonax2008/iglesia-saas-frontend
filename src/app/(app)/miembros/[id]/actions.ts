@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 export async function actualizarMiembro(_prevState: unknown, formData: FormData) {
   const id = formData.get("id") as string;
@@ -24,7 +25,13 @@ export async function actualizarMiembro(_prevState: unknown, formData: FormData)
     })
     .eq("id", personaId);
 
-  if (errorPersona) return { error: errorPersona.message };
+  if (errorPersona) {
+    await registrarErrorAccion(errorPersona, {
+      ruta: `/miembros/${id}`,
+      operacion: "actualizar datos personales de miembro",
+    });
+    return { error: errorPersona.message };
+  }
 
   const { error: errorMiembro } = await supabase
     .from("miembros")
@@ -50,14 +57,26 @@ export async function actualizarMiembro(_prevState: unknown, formData: FormData)
     })
     .eq("id", id);
 
-  if (errorMiembro) return { error: errorMiembro.message };
+  if (errorMiembro) {
+    await registrarErrorAccion(errorMiembro, {
+      ruta: `/miembros/${id}`,
+      operacion: "actualizar datos de miembro",
+    });
+    return { error: errorMiembro.message };
+  }
 
   await supabase.from("miembro_comisiones").delete().eq("miembro_id", id);
   if (comisionIds.length) {
     const { error: errorComisiones } = await supabase
       .from("miembro_comisiones")
       .insert(comisionIds.map((comisionId) => ({ miembro_id: id, comision_id: comisionId })));
-    if (errorComisiones) return { error: errorComisiones.message };
+    if (errorComisiones) {
+      await registrarErrorAccion(errorComisiones, {
+        ruta: `/miembros/${id}`,
+        operacion: "actualizar comisiones de miembro",
+      });
+      return { error: errorComisiones.message };
+    }
   }
 
   revalidatePath(`/miembros/${id}`);

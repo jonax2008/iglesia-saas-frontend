@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 export async function crearMinistro(_prevState: unknown, formData: FormData) {
   const esPastorDistrital = formData.get("es_pastor_distrital") === "on";
@@ -34,7 +35,10 @@ export async function crearMinistro(_prevState: unknown, formData: FormData) {
       : undefined,
   });
 
-  if (error) return { error: error.message };
+  if (error) {
+    await registrarErrorAccion(error, { ruta: "/ministros/nuevo", operacion: "crear ministro" });
+    return { error: error.message };
+  }
 
   redirect("/ministros");
 }

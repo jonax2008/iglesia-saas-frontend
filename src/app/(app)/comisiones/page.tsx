@@ -1,13 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { eliminarComision } from "./actions";
 import { FormularioNuevaComision } from "./formulario-nueva";
 
 export default async function PaginaComisiones() {
   const supabase = await createClient();
-  const { data: comisiones } = await supabase
+  const { data: comisiones, error } = await supabase
     .from("comisiones")
     .select("id, nombre")
     .order("nombre");
+  if (error) await registrarErrorFatal(error, { ruta: "/comisiones", operacion: "listar comisiones" });
 
   return (
     <div className="max-w-xl space-y-6">

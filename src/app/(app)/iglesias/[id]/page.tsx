@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { FormularioEditarIglesia } from "./formulario";
 
 export default async function PaginaDetalleIglesia({
@@ -11,13 +12,14 @@ export default async function PaginaDetalleIglesia({
   const { id } = await params;
   const supabase = await createClient();
 
-  const { data: iglesia } = await supabase
+  const { data: iglesia, error } = await supabase
     .from("iglesias")
     .select(
       "id, nombre, calle_numero, codigo_postal, google_maps_link, telefono_casa_pastoral, distrito_id, ministro_actual_id, colonia_id, pais_id, estado_id, ciudad_id, colonias(nombre), ciudades(nombre), estados(nombre), paises(nombre), distritos(numero, nombre)",
     )
     .eq("id", id)
     .maybeSingle();
+  if (error) await registrarErrorFatal(error, { ruta: `/iglesias/${id}`, operacion: "cargar detalle de iglesia" });
 
   if (!iglesia) notFound();
 

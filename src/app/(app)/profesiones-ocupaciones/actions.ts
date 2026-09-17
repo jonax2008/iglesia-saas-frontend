@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorAccion } from "@/lib/log-error";
 
 export async function crearProfesionOcupacion(
   _prevState: unknown,
@@ -13,7 +14,13 @@ export async function crearProfesionOcupacion(
   const supabase = await createClient();
   const { error } = await supabase.from("profesiones_ocupaciones").insert({ nombre });
 
-  if (error) return { error: error.message };
+  if (error) {
+    await registrarErrorAccion(error, {
+      ruta: "/profesiones-ocupaciones",
+      operacion: "crear profesión u ocupación",
+    });
+    return { error: error.message };
+  }
 
   revalidatePath("/profesiones-ocupaciones");
   return { error: "" };
@@ -22,6 +29,12 @@ export async function crearProfesionOcupacion(
 export async function eliminarProfesionOcupacion(formData: FormData) {
   const id = formData.get("id") as string;
   const supabase = await createClient();
-  await supabase.from("profesiones_ocupaciones").delete().eq("id", id);
+  const { error } = await supabase.from("profesiones_ocupaciones").delete().eq("id", id);
+  if (error) {
+    await registrarErrorAccion(error, {
+      ruta: "/profesiones-ocupaciones",
+      operacion: "eliminar profesión u ocupación",
+    });
+  }
   revalidatePath("/profesiones-ocupaciones");
 }

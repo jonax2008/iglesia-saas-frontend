@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 
 export default async function PaginaReportesIglesia({
   params,
@@ -9,21 +10,33 @@ export default async function PaginaReportesIglesia({
   const { id } = await params;
   const supabase = await createClient();
 
-  const { data: iglesia } = await supabase
+  const { data: iglesia, error: errorIglesia } = await supabase
     .from("iglesias")
     .select("id, nombre")
     .eq("id", id)
     .maybeSingle();
+  if (errorIglesia) {
+    await registrarErrorFatal(errorIglesia, {
+      ruta: `/iglesias/${id}/reportes`,
+      operacion: "cargar iglesia para reportes",
+    });
+  }
 
   if (!iglesia) notFound();
 
-  const { data: reportes } = await supabase
+  const { data: reportes, error: errorReportes } = await supabase
     .from("reportes_administracion")
     .select(
       "id, fecha_generacion, total_activos, total_retirados_temporales, total_archivo, ministros!inner(iglesia_id, personas(nombres, apellido_paterno))",
     )
     .eq("ministros.iglesia_id", id)
     .order("fecha_generacion");
+  if (errorReportes) {
+    await registrarErrorFatal(errorReportes, {
+      ruta: `/iglesias/${id}/reportes`,
+      operacion: "listar reportes de administración",
+    });
+  }
 
   const lista = reportes ?? [];
   const maxActivos = Math.max(1, ...lista.map((r) => r.total_activos));

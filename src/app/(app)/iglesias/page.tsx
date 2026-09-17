@@ -1,17 +1,19 @@
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { obtenerUsuarioActual } from "@/lib/auth";
+import { registrarErrorFatal } from "@/lib/log-error";
 
 export default async function PaginaIglesias() {
   const supabase = await createClient();
   const usuario = await obtenerUsuarioActual();
   const puedeCrear = usuario?.rol === "super_admin";
-  const { data: iglesias } = await supabase
+  const { data: iglesias, error } = await supabase
     .from("iglesias")
     .select(
       "id, nombre, calle_numero, ciudades(nombre), estados(nombre), distritos(numero, nombre)",
     )
     .order("nombre");
+  if (error) await registrarErrorFatal(error, { ruta: "/iglesias", operacion: "listar iglesias" });
 
   return (
     <div className="max-w-2xl space-y-6">

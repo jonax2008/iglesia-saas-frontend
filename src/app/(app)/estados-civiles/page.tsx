@@ -1,13 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { eliminarEstadoCivil } from "./actions";
 import { FormularioNuevoEstadoCivil } from "./formulario-nuevo";
 
 export default async function PaginaEstadosCiviles() {
   const supabase = await createClient();
-  const { data: estadosCiviles } = await supabase
+  const { data: estadosCiviles, error } = await supabase
     .from("estados_civiles")
     .select("id, nombre")
     .order("nombre");
+  if (error) await registrarErrorFatal(error, { ruta: "/estados-civiles", operacion: "listar estados civiles" });
 
   return (
     <div className="max-w-xl space-y-6">

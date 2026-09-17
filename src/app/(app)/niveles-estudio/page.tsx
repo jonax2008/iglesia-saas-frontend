@@ -1,13 +1,15 @@
 import { createClient } from "@/lib/supabase/server";
+import { registrarErrorFatal } from "@/lib/log-error";
 import { eliminarNivelEstudio } from "./actions";
 import { FormularioNuevoNivelEstudio } from "./formulario-nuevo";
 
 export default async function PaginaNivelesEstudio() {
   const supabase = await createClient();
-  const { data: niveles } = await supabase
+  const { data: niveles, error } = await supabase
     .from("niveles_estudio")
     .select("id, nombre")
     .order("nombre");
+  if (error) await registrarErrorFatal(error, { ruta: "/niveles-estudio", operacion: "listar niveles de estudio" });
 
   return (
     <div className="max-w-xl space-y-6">
