@@ -15,7 +15,7 @@ export default async function PaginaDetalleMinistro({
   const { data: ministro } = await supabase
     .from("ministros")
     .select(
-      "id, persona_id, correo_institucional, fecha_inicio_administracion, fecha_fin_administracion, grado_id, es_pastor_distrital, distrito_a_cargo_id, es_pastor_jurisdiccional, jurisdiccion_a_cargo_id, iglesias(nombre), personas(nombres, apellido_paterno, apellido_materno, fecha_nacimiento, sexo, telefono_celular, curp)",
+      "id, persona_id, correo_institucional, fecha_inicio_administracion, fecha_fin_administracion, grado_id, es_pastor_distrital, distrito_a_cargo_id, es_pastor_jurisdiccional, jurisdiccion_a_cargo_id, iglesias!ministros_iglesia_id_fkey(nombre), personas(nombres, apellido_paterno, apellido_materno, fecha_nacimiento, sexo, telefono_celular, curp)",
     )
     .eq("id", id)
     .maybeSingle();
