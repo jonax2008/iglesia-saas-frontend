@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { obtenerUsuarioActual } from "@/lib/auth";
 import { FormularioEditarMinistro } from "./formulario";
+import { ListaReportesMinistro } from "./reportes/lista";
 
 export default async function PaginaDetalleMinistro({
   params,
@@ -20,11 +22,21 @@ export default async function PaginaDetalleMinistro({
 
   if (!ministro) notFound();
 
-  const [{ data: grados }, { data: distritos }, { data: jurisdicciones }] =
+  const usuario = await obtenerUsuarioActual();
+  const puedeGenerarReporte = ["super_admin", "ministro_en_turno", "encargado_estadistica"].includes(
+    usuario?.rol ?? "",
+  );
+
+  const [{ data: grados }, { data: distritos }, { data: jurisdicciones }, { data: reportes }] =
     await Promise.all([
       supabase.from("grados_ministros").select("id, nombre").order("nombre"),
       supabase.from("distritos").select("id, numero, nombre").order("numero"),
       supabase.from("jurisdicciones").select("id, nombre").order("nombre"),
+      supabase
+        .from("reportes_administracion")
+        .select("id, fecha_generacion, total_activos, total_retirados_temporales, total_archivo, detalle")
+        .eq("ministro_id", id)
+        .order("fecha_generacion", { ascending: false }),
     ]);
 
   return (
@@ -36,6 +48,12 @@ export default async function PaginaDetalleMinistro({
         </h1>
         <p className="mt-1 text-sm text-slate-600">{ministro.iglesias?.nombre}</p>
       </div>
+
+      <ListaReportesMinistro
+        ministroId={ministro.id}
+        reportes={reportes ?? []}
+        puedeGenerar={puedeGenerarReporte}
+      />
 
       <div>
         <h2 className="mb-3 text-sm font-semibold text-slate-700">Editar información</h2>

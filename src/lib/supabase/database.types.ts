@@ -1020,6 +1020,44 @@ export type Database = {
         }
         Relationships: []
       }
+      reportes_administracion: {
+        Row: {
+          detalle: Json
+          fecha_generacion: string
+          id: string
+          ministro_id: string
+          total_activos: number
+          total_archivo: number
+          total_retirados_temporales: number
+        }
+        Insert: {
+          detalle: Json
+          fecha_generacion?: string
+          id?: string
+          ministro_id: string
+          total_activos: number
+          total_archivo: number
+          total_retirados_temporales: number
+        }
+        Update: {
+          detalle?: Json
+          fecha_generacion?: string
+          id?: string
+          ministro_id?: string
+          total_activos?: number
+          total_archivo?: number
+          total_retirados_temporales?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reportes_administracion_ministro_id_fkey"
+            columns: ["ministro_id"]
+            isOneToOne: false
+            referencedRelation: "ministros"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       roles: {
         Row: {
           id: number
@@ -1156,6 +1194,10 @@ export type Database = {
       }
       es_encargado_de_grupo: { Args: { p_grupo_id: string }; Returns: boolean }
       generar_avisos_cambio_grupo: { Args: never; Returns: number }
+      generar_reporte_administracion: {
+        Args: { p_ministro_id: string }
+        Returns: string
+      }
       iglesia_actual: { Args: never; Returns: string }
       miembro_actual: { Args: never; Returns: string }
       mover_miembro_grupo: {

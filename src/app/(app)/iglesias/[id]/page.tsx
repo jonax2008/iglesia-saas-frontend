@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { FormularioEditarIglesia } from "./formulario";
@@ -42,6 +43,12 @@ export default async function PaginaDetalleIglesia({
           <br />
           Distrito #{iglesia.distritos?.numero} {iglesia.distritos?.nombre}
         </p>
+        <Link
+          href={`/iglesias/${iglesia.id}/reportes`}
+          className="mt-2 inline-block text-sm font-medium text-slate-700 underline"
+        >
+          Ver reportes comparativos de administración
+        </Link>
       </div>
 
       <div>

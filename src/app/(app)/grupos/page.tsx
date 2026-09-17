@@ -67,12 +67,20 @@ export default async function PaginaGrupos() {
                     ({g.edad_inicial}-{g.edad_final} años) — {g.iglesias?.nombre}
                   </span>
                 </p>
-                <Link
-                  href={`/grupos/${g.id}/asistencia`}
-                  className="shrink-0 rounded-lg bg-slate-700 px-3 py-1 text-sm text-white"
-                >
-                  Tomar asistencia
-                </Link>
+                <div className="flex shrink-0 gap-2">
+                  <Link
+                    href={`/grupos/${g.id}/asistencia`}
+                    className="rounded-lg bg-slate-700 px-3 py-1 text-sm text-white"
+                  >
+                    Tomar asistencia
+                  </Link>
+                  <Link
+                    href={`/grupos/${g.id}/estadisticas`}
+                    className="rounded-lg border border-slate-300 px-3 py-1 text-sm text-slate-700"
+                  >
+                    Estadísticas
+                  </Link>
+                </div>
               </div>
 
               <div className="mt-3 space-y-1">
